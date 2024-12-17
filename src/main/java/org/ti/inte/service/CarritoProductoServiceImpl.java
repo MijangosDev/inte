@@ -29,115 +29,148 @@ public class CarritoProductoServiceImpl implements ICarritoProductoService {
     private IClienteDao clienteDao;
 
     private final CustomStack<CarritoProducto> productos = new CustomStack<>(10);
-
     HashMap<Long, CustomStack<CarritoProducto>> produ = new HashMap<>();
+
+    // Método común para construir las respuestas
+    private ResponseEntity<CarritoProductoResponseRest> buildResponse(String mensaje, String codigo, String detalle, HttpStatus status) {
+        CarritoProductoResponseRest response = new CarritoProductoResponseRest();
+        response.setMetadata(mensaje, codigo, detalle);
+        return new ResponseEntity<>(response, status);
+    }
 
     @Override
     @Transactional
     public ResponseEntity<CarritoProductoResponseRest> crearCarrito(CarritoProducto carritoProducto) {
         log.info("Creando carrito de productos");
-        CarritoProductoResponseRest response = new CarritoProductoResponseRest();
-        List<CarritoProducto> list = new ArrayList<>();
 
         try {
-            System.out.println(carritoProducto.getProducto().getNombre());
-            carritoProducto.setId(null);
+            if (carritoProducto.getProducto() == null) {
+                log.warn("El carrito no tiene un producto asociado");
+                return buildResponse("RESPUESTA ERROR", "01", "El carrito no tiene un producto asociado", HttpStatus.BAD_REQUEST);
+            }
+
+            carritoProducto.setId(null); // Limpiar el ID para la nueva inserción
             CarritoProducto nuevoCarritoProducto = carritoProductoDao.save(carritoProducto);
 
-            if (nuevoCarritoProducto.getProducto() != null) {
-                list.add(nuevoCarritoProducto);
-                response.getCarritoProductoResponse().setCarritoProducto(list);
-                response.setMetadata("RESPUESTA OK", "00", "Carrito de productos creado correctamente");
-                return new ResponseEntity<>(response, HttpStatus.CREATED);
-            } else {
-                log.warn("El carrito creado no tiene un producto asociado");
-                response.setMetadata("RESPUESTA ERROR", "01", "El carrito creado no tiene un producto asociado");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
+            List<CarritoProducto> list = new ArrayList<>();
+            list.add(nuevoCarritoProducto);
+
+            return buildResponse("RESPUESTA OK", "00", "Carrito de productos creado correctamente", HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("Error al crear el carrito de productos", e);
-            response.setMetadata("RESPUESTA ERROR", "01", "Error al crear el carrito de productos");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return buildResponse("RESPUESTA ERROR", "01", "Error al crear el carrito de productos", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-    @Override
+   /* @Override
     @Transactional
     public ResponseEntity<CarritoProductoResponseRest> quitarCarrito(CarritoProducto carritoProducto) {
-        log.info("Creando carrito de productos");
-        CarritoProductoResponseRest response = new CarritoProductoResponseRest();
-        List<CarritoProducto> list = new ArrayList<>();
+        log.info("Eliminando producto del carrito");
 
-        try{
+        try {
             Optional<CarritoProducto> carrito = carritoProductoDao.findById(carritoProducto.getId());
-            if(carrito.isPresent())
-            {
-                productos.push(carrito.get());
-                carritoProductoDao.delete(carrito.get());
 
-                produ.put(carritoProducto.getCliente().getId(),productos);
+            carrito.ifPresentOrElse(
+                    producto -> {
+                        productos.push(producto); // Agregar a la pila
+                        carritoProductoDao.delete(producto); // Eliminar de la base de datos
+                        produ.put(carritoProducto.getCliente().getId(), productos); // Guardar el estado de la pila por cliente
 
-                System.out.println(productos.peek().getCliente().getNombre()+" Se guarda");
+                        log.info("Producto " + producto.getProducto().getNombre() + " removido exitosamente");
 
-                list.add(carritoProducto);
-
-                response.getCarritoProductoResponse().setCarritoProducto(productos.getItems());
-                response.setMetadata("RESPUESTA OK", "00", "Producto "+productos.peek()+" removido exitosamente");
-            }
-            else
-            {
-                log.warn("No se algún cliente con ese id");
-                response.setMetadata("RESPUESTA OK", "01", "Cliente no encontrado");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-        }catch (Exception e){
-            log.warn("¡Algo salió mal, intentalo nuevamente!");
-            response.setMetadata("RESPUESTA ERROR", "01", "No respuesta fallida");
-            e.printStackTrace();
-            return new ResponseEntity<CarritoProductoResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+                        // Respuesta exitosa
+                        CarritoProductoResponseRest response = new CarritoProductoResponseRest();
+                        response.getCarritoProductoResponse().setCarritoProducto(productos.getItems());
+                        response.setMetadata("RESPUESTA OK", "00", "Producto removido exitosamente");
+                        new ResponseEntity<>(response, HttpStatus.CREATED);
+                    },
+                    () -> {
+                        log.warn("Producto no encontrado en el carrito");
+                        buildResponse("RESPUESTA ERROR", "01", "Producto no encontrado", HttpStatus.NOT_FOUND);
+                    }
+            );
+        } catch (Exception e) {
+            log.error("Error al eliminar el producto del carrito", e);
+            return buildResponse("RESPUESTA ERROR", "01", "Error al eliminar el producto", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<CarritoProductoResponseRest>(response, HttpStatus.CREATED);
+
+        return buildResponse("RESPUESTA OK", "00", "Producto removido exitosamente", HttpStatus.OK);
     }
+    }*/
 
     @Override
     @Transactional
     public ResponseEntity<CarritoProductoResponseRest> regresaCarrito() {
         log.info("Regresando el producto al carrito");
-        CarritoProductoResponseRest response = new CarritoProductoResponseRest();
-        List<CarritoProducto> list = new ArrayList<>();
 
         try {
-            //Optional<Cliente> cliente = clienteDao.findById(id);
+            CarritoProducto carrito = productos.pop(); // Recuperamos el último producto eliminado
 
-            System.out.println(productos.peek().getCliente().getNombre());
-
-            //if (cliente.isPresent()) {
-
-            CarritoProducto carrito = productos.pop();
-
-            if (!(carrito == null))
-            {
-                carrito.setId(null);
-                carritoProductoDao.save(carrito); // Guardar producto en la base de datos
-                list.add(carrito);
-                response.getCarritoProductoResponse().setCarritoProducto(list);
-                response.setMetadata("RESPUESTA OK", "00", "Producto retornado con éxito");
-            } else {
-                log.warn("El carrito está vacío ");
-                response.setMetadata("RESPUESTA ERROR", "01", "No hay productos para retornar");
-                return new ResponseEntity<CarritoProductoResponseRest>(response, HttpStatus.BAD_REQUEST);
+            if (carrito == null) {
+                log.warn("El carrito está vacío");
+                return buildResponse("RESPUESTA ERROR", "01", "No hay productos para retornar", HttpStatus.BAD_REQUEST);
             }
-            /*} else {
-                log.warn("Cliente no encontrado");
-                response.setMetadata("RESPUESTA ERROR", "01", "Cliente no encontrado");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-             }*/
+
+            carrito.setId(null); // Asegurar que sea una nueva instancia para la base de datos
+            carritoProductoDao.save(carrito); // Guardar producto en la base de datos
+
+            List<CarritoProducto> list = new ArrayList<>();
+            list.add(carrito);
+
+            // Respuesta exitosa
+            CarritoProductoResponseRest response = new CarritoProductoResponseRest();
+            response.getCarritoProductoResponse().setCarritoProducto(list);
+            response.setMetadata("RESPUESTA OK", "00", "Producto retornado al carrito con éxito");
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
-            log.error("¡Algo salió mal, intentalo nuevamente!", e);
-            response.setMetadata("RESPUESTA ERROR", "01", "Error al retornar el producto");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("¡Algo salió mal al regresar el producto al carrito!", e);
+            return buildResponse("RESPUESTA ERROR", "01", "Error al retornar el producto", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CarritoProductoResponseRest> quitarCarrito(Long clienteId, Long productoId) {
+        log.info("Eliminando producto con ID {} del carrito del cliente con ID {}", productoId, clienteId);
+
+        try {
+            // Buscar el carrito de productos del cliente
+            Optional<CarritoProducto> carritoProductoOptional = carritoProductoDao.findById(productoId);
+
+            // Si el carrito de productos existe, proceder a la eliminación
+            if (carritoProductoOptional.isPresent()) {
+                CarritoProducto carritoProducto = carritoProductoOptional.get();
+
+                // Verificar que el producto pertenece al cliente correcto
+                if (carritoProducto.getCliente().getId().equals(clienteId)) {
+                    // Eliminar el producto del carrito
+                    carritoProductoDao.delete(carritoProducto);
+
+                    // Agregar el producto eliminado a la pila de productos eliminados (historial)
+                    productos.push(carritoProducto);
+
+                    // Guardar el estado de la pila de productos por cliente
+                    produ.put(clienteId, productos);
+
+                    // Respuesta exitosa
+                    CarritoProductoResponseRest response = new CarritoProductoResponseRest();
+                    response.getCarritoProductoResponse().setCarritoProducto(productos.getItems());
+                    response.setMetadata("RESPUESTA OK", "00", "Producto eliminado exitosamente del carrito");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else {
+                    log.warn("El producto con ID {} no pertenece al cliente con ID {}", productoId, clienteId);
+                    return buildResponse("RESPUESTA ERROR", "02", "El producto no pertenece al cliente especificado", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                log.warn("Producto con ID {} no encontrado", productoId);
+                return buildResponse("RESPUESTA ERROR", "01", "Producto no encontrado", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error("Error al eliminar el producto del carrito", e);
+            return buildResponse("RESPUESTA ERROR", "03", "Error al eliminar el producto del carrito", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
