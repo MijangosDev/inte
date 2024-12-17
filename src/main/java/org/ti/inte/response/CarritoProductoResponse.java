@@ -1,5 +1,7 @@
 package org.ti.inte.response;
 
+import org.ti.inte.model.CarritoProducto;
+
 import java.util.List;
 
 public class CarritoProductoResponse

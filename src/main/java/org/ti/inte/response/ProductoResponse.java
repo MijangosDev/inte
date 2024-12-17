@@ -1,5 +1,7 @@
 package org.ti.inte.response;
 
+import org.ti.inte.model.Producto;
+
 import java.util.List;
 
 public class ProductoResponse
