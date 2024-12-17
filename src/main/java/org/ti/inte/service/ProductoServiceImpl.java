@@ -32,7 +32,7 @@ public class ProductoServiceImpl implements IProductoService
 
         try
         {
-            Producto nuevoProducto =    productoDao.save(Producto);
+            Producto nuevoProducto =    productoDao.save(producto);
             if (nuevoProducto != null)
             {
                 list.add(nuevoProducto);

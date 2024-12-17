@@ -33,7 +33,7 @@ public class ClienteServiceImpl implements IClienteService
 
         try
         {
-            Cliente nuevoCliente = clienteDao.save(Cliente);
+            Cliente nuevoCliente = clienteDao.save(cliente);
             if (nuevoCliente != null)
             {
                 list.add(nuevoCliente);
