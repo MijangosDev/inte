@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
+import org.ti.inte.model.Producto;
+import org.ti.inte.response.ProductoResponseRest;
+import org.ti.inte.service.IProductoService;
 
 @RestController
 @RequestMapping("/api/v1")

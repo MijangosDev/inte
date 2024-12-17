@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.ti.inte.model.Cliente;
+import org.ti.inte.model.dao.IClienteDao;
+import org.ti.inte.response.ClienteResponseRest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,7 @@ import java.util.Optional;
 @Service
 public class ClienteServiceImpl implements IClienteService
 {
-    private static final Logger log = LoggerFactory.getLogger(ClienteServiceImp.class);
+    private static final Logger log = LoggerFactory.getLogger(ClienteServiceImpl.class);
 
     @Autowired
     private IClienteDao clienteDao;
@@ -30,7 +33,7 @@ public class ClienteServiceImpl implements IClienteService
 
         try
         {
-            Cliente nuevoCliente = clienteDao.save(cliente);
+            Cliente nuevoCliente = clienteDao.save(Cliente);
             if (nuevoCliente != null)
             {
                 list.add(nuevoCliente);

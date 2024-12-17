@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.ti.inte.model.Producto;
+import org.ti.inte.model.dao.IProductoDao;
+import org.ti.inte.response.ProductoResponseRest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.List;
 @Service
 public class ProductoServiceImpl implements IProductoService
 {
-    private static final Logger log = LoggerFactory.getLogger(ClienteServiceImp.class);
+    private static final Logger log = LoggerFactory.getLogger(ClienteServiceImpl.class);
 
     @Autowired
     private IProductoDao productoDao;
@@ -29,7 +32,7 @@ public class ProductoServiceImpl implements IProductoService
 
         try
         {
-            Producto nuevoProducto = productoDao.save(producto);
+            Producto nuevoProducto =    productoDao.save(Producto);
             if (nuevoProducto != null)
             {
                 list.add(nuevoProducto);

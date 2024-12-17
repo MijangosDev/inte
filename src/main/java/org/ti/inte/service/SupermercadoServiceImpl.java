@@ -7,6 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.ti.inte.model.CarritoProducto;
+import org.ti.inte.model.Cliente;
+import org.ti.inte.model.dao.ICarritoProductoDao;
+import org.ti.inte.model.dao.IClienteDao;
+import org.ti.inte.model.dao.IProductoDao;
+import org.ti.inte.response.CarritoProductoResponseRest;
 
 import java.util.ArrayList;
 import java.util.List;

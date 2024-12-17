@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
+import org.ti.inte.response.CajaResponseRest;
+import org.ti.inte.service.ICajaService;
 
 @RestController
 @RequestMapping("api/v1")
