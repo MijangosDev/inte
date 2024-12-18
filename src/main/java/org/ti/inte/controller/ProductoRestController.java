@@ -12,7 +12,7 @@ import org.ti.inte.response.ProductoResponseRest;
 import org.ti.inte.service.IProductoService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/super")
 public class ProductoRestController
 {
     @Autowired

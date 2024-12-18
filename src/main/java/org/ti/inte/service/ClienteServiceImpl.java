@@ -24,7 +24,6 @@ public class ClienteServiceImpl implements IClienteService
     private IClienteDao clienteDao;
 
     @Override
-    @Transactional
     public ResponseEntity<ClienteResponseRest> crearCliente(Cliente cliente)
     {
         log.info("Creando Cliente");
@@ -56,7 +55,6 @@ public class ClienteServiceImpl implements IClienteService
     }
 
     @Override
-    @Transactional
     public ResponseEntity<ClienteResponseRest> obtenerCliente(Long id) {
         log.info("bteniendo datos del Cliente");
         ClienteResponseRest response = new ClienteResponseRest();

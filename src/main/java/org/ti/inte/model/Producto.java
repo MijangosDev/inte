@@ -12,10 +12,10 @@ public class  Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+
     private String nombre;
 
-    @NotNull
+
     private float precio;
 
     public void setId(Long id) {
