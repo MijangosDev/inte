@@ -22,7 +22,6 @@ public class ProductoServiceImpl implements IProductoService
     @Autowired
     private IProductoDao productoDao;
 
-    @Transactional
     @Override
     public ResponseEntity<ProductoResponseRest> insertarProducto(Producto producto)
     {

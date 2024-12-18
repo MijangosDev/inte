@@ -32,7 +32,6 @@ public class SupermercadoServiceImpl implements ISupermercadoService{
     private IProductoDao productoDao;
 
     @Override
-    @Transactional
     public ResponseEntity<CarritoProductoResponseRest> procesarCompra(Long id)
     {
 

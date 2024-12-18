@@ -11,7 +11,7 @@ import org.ti.inte.response.CarritoProductoResponseRest;
 import org.ti.inte.service.ISupermercadoService;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("/super")
 public class SupermercadoRestController
 {
     @Autowired

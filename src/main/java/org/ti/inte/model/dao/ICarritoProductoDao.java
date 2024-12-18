@@ -9,9 +9,5 @@ import org.ti.inte.model.CarritoProducto;
 import java.util.List;
 
 public interface ICarritoProductoDao extends JpaRepository<CarritoProducto, Long> {
-    @Query("select c from CarritoProducto c where Cliente = :id")
-    public List<CarritoProducto> findByClienteId(@Param("id") Long id);
-    void deleteByCliente_IdAndProducto_Id(Long clienteId, Long productoId);
-
 }
 
