@@ -17,7 +17,7 @@ public class Cliente implements Serializable {
     private String nombre;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private List<CarritoProducto> carrito;
 
     public void setId(Long id) {

@@ -8,21 +8,19 @@ import java.io.Serializable;
 
 @Entity
 public class CarritoProducto implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-    @NotNull
+    //@JsonIgnoreProperties
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
-    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    //@JsonIgnoreProperties
     private Producto producto;
 
-    @NotNull
     private int cantidad;
 
     public void setId(Long id) {

@@ -8,7 +8,7 @@ import org.ti.inte.response.CajaResponseRest;
 import org.ti.inte.service.ICajaService;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("/super")
 public class CajaRestController
 {
     @Autowired

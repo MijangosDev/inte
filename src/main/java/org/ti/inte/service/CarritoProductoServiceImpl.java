@@ -39,7 +39,6 @@ public class CarritoProductoServiceImpl implements ICarritoProductoService {
     }
 
     @Override
-    @Transactional
     public ResponseEntity<CarritoProductoResponseRest> crearCarrito(CarritoProducto carritoProducto) {
         log.info("Creando carrito de productos");
 
@@ -49,7 +48,7 @@ public class CarritoProductoServiceImpl implements ICarritoProductoService {
                 return buildResponse("RESPUESTA ERROR", "01", "El carrito no tiene un producto asociado", HttpStatus.BAD_REQUEST);
             }
 
-            carritoProducto.setId(null); // Limpiar el ID para la nueva inserción
+            carritoProducto.setId(null);
             CarritoProducto nuevoCarritoProducto = carritoProductoDao.save(carritoProducto);
 
             List<CarritoProducto> list = new ArrayList<>();
@@ -62,44 +61,7 @@ public class CarritoProductoServiceImpl implements ICarritoProductoService {
         }
     }
 
-   /* @Override
-    @Transactional
-    public ResponseEntity<CarritoProductoResponseRest> quitarCarrito(CarritoProducto carritoProducto) {
-        log.info("Eliminando producto del carrito");
-
-        try {
-            Optional<CarritoProducto> carrito = carritoProductoDao.findById(carritoProducto.getId());
-
-            carrito.ifPresentOrElse(
-                    producto -> {
-                        productos.push(producto); // Agregar a la pila
-                        carritoProductoDao.delete(producto); // Eliminar de la base de datos
-                        produ.put(carritoProducto.getCliente().getId(), productos); // Guardar el estado de la pila por cliente
-
-                        log.info("Producto " + producto.getProducto().getNombre() + " removido exitosamente");
-
-                        // Respuesta exitosa
-                        CarritoProductoResponseRest response = new CarritoProductoResponseRest();
-                        response.getCarritoProductoResponse().setCarritoProducto(productos.getItems());
-                        response.setMetadata("RESPUESTA OK", "00", "Producto removido exitosamente");
-                        new ResponseEntity<>(response, HttpStatus.CREATED);
-                    },
-                    () -> {
-                        log.warn("Producto no encontrado en el carrito");
-                        buildResponse("RESPUESTA ERROR", "01", "Producto no encontrado", HttpStatus.NOT_FOUND);
-                    }
-            );
-        } catch (Exception e) {
-            log.error("Error al eliminar el producto del carrito", e);
-            return buildResponse("RESPUESTA ERROR", "01", "Error al eliminar el producto", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return buildResponse("RESPUESTA OK", "00", "Producto removido exitosamente", HttpStatus.OK);
-    }
-    }*/
-
     @Override
-    @Transactional
     public ResponseEntity<CarritoProductoResponseRest> regresaCarrito() {
         log.info("Regresando el producto al carrito");
 
@@ -130,7 +92,6 @@ public class CarritoProductoServiceImpl implements ICarritoProductoService {
     }
 
     @Override
-    @Transactional
     public ResponseEntity<CarritoProductoResponseRest> quitarCarrito(Long clienteId, Long productoId) {
         log.info("Eliminando producto con ID {} del carrito del cliente con ID {}", productoId, clienteId);
 

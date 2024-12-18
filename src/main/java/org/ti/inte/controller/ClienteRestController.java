@@ -9,7 +9,7 @@ import org.ti.inte.response.ClienteResponseRest;
 import org.ti.inte.service.IClienteService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/super")
 public class ClienteRestController
 {
     @Autowired

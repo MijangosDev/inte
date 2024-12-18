@@ -2,23 +2,32 @@ package org.ti.inte.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.ti.inte.model.CarritoProducto;
 import org.ti.inte.response.CarritoProductoResponseRest;
 import org.ti.inte.service.ICarritoProductoService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/super")
 public class CarritoRestController {
 
     @Autowired
     private ICarritoProductoService service;
 
+    @PostMapping("/carrito/crear")
+    public ResponseEntity<CarritoProductoResponseRest> crearCarrito(@RequestBody CarritoProducto carritoProducto) {
+        ResponseEntity<CarritoProductoResponseRest> response = service.crearCarrito(carritoProducto);
+        return response;
+    }
+
+    @PostMapping("/carrito/regresar")
+    public ResponseEntity<CarritoProductoResponseRest> regresarCarrito() {
+        ResponseEntity<CarritoProductoResponseRest> response = service.regresaCarrito();
+        return response;
+    }
+
     @PostMapping("/carrito/eliminar")
     public ResponseEntity<CarritoProductoResponseRest> quitarDelCarrito(@RequestBody CarritoEliminarRequest carritoEliminarRequest) {
-        // Llamamos al servicio para eliminar el producto del carrito
         ResponseEntity<CarritoProductoResponseRest> response = service.quitarCarrito(
                 carritoEliminarRequest.getClienteId(),
                 carritoEliminarRequest.getProductoId()
